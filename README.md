@@ -60,16 +60,17 @@ select e.*, cd.CityTier from CityData as cd
 
 
 ----Identify the total number of transactions with campaign coupon vs total number of transactions without campaign coupon. ----
-select count(
+select 
+sum(
     case 
     when campaign_id is not null then 1 
     else 0
     end) as with_campaign,
-            count(
-                    case
-                        when campaign_id is null then 1
-                        else 0
-                        end) as without_campaign
+            sum(
+                 case
+                 when campaign_id is null then 1
+                 else 0
+                 end) as without_campaign
                     from CustomerTransactionData;
 
 
