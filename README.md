@@ -2,31 +2,37 @@
 XYZ Paints Inc. is a paint company which was recently launched in 2019. You have to work on some of the pain points of the marketing team like consumer growth, lead conversions, etc. as well as help them work on new set of campaigns or doing market basket analysis.
 
 ---To find out the maximum and minimum transactions on a year basis---
-select a.*, max(total_Transaction) over () as max_, 
-            min(total_Transaction) over () as min_
-from (
-      select count(*) as total_Transaction ,extract(year from PurchaseDate) as Purchase_year
-from CustomerTransactionData 
-group by Purchase_year ) as a;
+select * from (
+	select *, max(Purchase) over() as max_, min(Purchase) over() as min_ from (
+			select year_, count(Trans_Id) as Purchase from (
+							select extract(year from PurchaseDate) as year_ , 
+       							Trans_Id from CustomerTransactionData 
+ 												) as t
+ 													group by year_ ) as b) as u 
+ 						where Purchase = max_ or Purchase = min_ ;
 
 
 ---To find out the maximum and minimum transactions on a Quarter basis---
-select a.*, max(total_Transaction) over () as max_, 
-            min(total_Transaction) over () as min_
-from (
-      select count(*) as total_Transaction ,extract(Quarter from PurchaseDate) as Purchase_Quarter
-from CustomerTransactionData 
-group by Purchase_Quarter ) as a;
+select * from (
+	select *, max(Purchase) over() as max_, min(Purchase) over() as min_ from (
+			select quarter_, count(Trans_Id) as Purchase from (
+					select extract(quarter from PurchaseDate) as quarter_ , 
+     					Trans_Id from CustomerTransactionData 
+ 										) as t
+									 group by quarter_ ) as b) as u 
+					 where Purchase = max_ or Purchase = min_ ;
 
 
----To find out the maximum and minimum transactions on a Monthly basis---
-select a.*, max(total_Transaction) over () as max_, 
-            min(total_Transaction) over () as min_
-from (
-      select count(*) as total_Transaction ,extract(Month from PurchaseDate) as Purchase_Quarter
-from CustomerTransactionData 
-group by Purchase_Month ) as a;
-
+---To find out the maximum and minimum transactions on a Monthly and yearly basis---
+select * from (
+		select *, max(Purchase) over() as max_, min(Purchase) over() as min_ from (
+			select month_, year_ , count(Trans_Id) as Purchase from (
+						select extract(month from PurchaseDate) as month_ ,
+   						extract(year from PurchaseDate) as year_ , 
+	 					Trans_Id from CustomerTransactionData 
+											 ) as t
+												 group by month_, year_ ) as b) as u 
+						 where Purchase = max_ or Purchase = min_ ;
 
 
 ------Identify the total_purchase order by Item/Product category-----
